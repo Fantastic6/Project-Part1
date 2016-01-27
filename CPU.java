@@ -43,13 +43,14 @@ public class CPU
 		short[] memory = new short[2048];
 
 		// storing an instruction into index 4
-		memory[4] = 1136;
+		memory[4] = 53250;
 
 		// storing the data into index 16
-		memory[18] = 91;
-		memory[17] = 18;
+		
+		memory[16] = 2;
 
-		IR[1] = 1;
+		
+		GPR[2] = 98;
 
 
 		// retrieve the value
@@ -98,6 +99,21 @@ public class CPU
 				// call load
 				ldr(parameters[1], parameters[2], parameters[3], parameters[4], memory, IR, GPR);
 				break;
+			case 2:
+				str(parameters[1], parameters[2], parameters[3], parameters[4], memory, IR, GPR);
+				break;
+			case 3:
+				lda(parameters[1], parameters[2], parameters[3], parameters[4], memory, IR, GPR);
+				break;
+			case 4:
+				amr(parameters[1], parameters[2], parameters[3], parameters[4], memory, IR, GPR);
+				break;
+			case 5: 
+				smr(parameters[1], parameters[2], parameters[3], parameters[4], memory, IR, GPR);
+				break;
+			case 6:
+				air(parameters[1], parameters[2], GPR);
+				break;
 			default:
 				break;
 		}
@@ -124,16 +140,32 @@ public class CPU
 		int IRValue = 0;
 		int IAValue = 0;
 		int AddressValue = 0;
+		int [] parameters = new int[5];
 		switch(opcode) {
 			case 1:
 			case 2:
 			case 3:
+			case 4:
+			case 5:
 			case 41:
 			case 42:
 				GPRValue = (instruction & 0x3FF) >> 8;
 				IRValue = (instruction & 0xFF) >> 6;
 				IAValue = (instruction & 0x3F) >> 5;
 				AddressValue = instruction & 0x1F;
+				parameters[0] = opcode; 
+				parameters[1] = GPRValue;
+				parameters[2] = IRValue;
+				parameters[3] = IAValue;
+				parameters[4] = AddressValue;
+				break;
+			case 6:
+			case 7:
+				GPRValue = (instruction & 0x3FF) >> 8;
+				short immed = instruction & 0xff;
+				parameters[0] = opcode;
+				parameters[1] = GPRValue; 
+				parameters[2] = immed;
 				break;
 			default:
 				break;
@@ -141,7 +173,7 @@ public class CPU
 		}
 		
 
-		int [] parameters = {opcode, GPRValue, IRValue, IAValue, AddressValue};
+		
 		return parameters;
 	}
 
@@ -151,47 +183,62 @@ public class CPU
 		// calculate the effective address
 		int EA = getEA(IX, I, address, memory, IR);
 
-		// handle no indirect addressing
-		if (I == 0)
-		{
-			if (IX == 0)
-			{
-				// load register IX with the contents of the specified address
-				GPR[R] = memory[EA];
-				System.out.println("Load completed");
-				System.out.println(GPR[R]);
-			}
-			else
-			{
-				GPR[R] = memory[EA];
-				System.out.println("Load completed");
-				System.out.println(GPR[R]);
-			}
+
+		// load register IX with the contents of the specified address
+		GPR[R] = memory[EA];
+		System.out.println("Load completed");
+		System.out.println(GPR[R]);
 			
-		}
-		else
-		{
-			if (IX == 0)
-			{
-				GPR[R] = memory[EA];
-				System.out.println("Load completed");
-				System.out.println(GPR[R]);
-			}
-			else
-			{
-				GPR[R] = memory[EA];
-				System.out.println("Load completed");
-				System.out.println(GPR[R]);
-			}
-		}
 
 	}
 
 	public static void str(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
 	{
+		int EA = getEA(IX, I, address, memory, IR);
+
+		//store
+		memory[EA] = GPR[R];
+		System.out.println("Store completed");
+		System.out.println(memory[EA]);
+	}
+
+	public static void lda(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
+	{
+		int EA = getEA(IX, I, address, memory, IR);
+
+		GPR[R] = (short)EA;
+		System.out.println("Store completed");
+		System.out.println(GPR[R]);
 
 	}
 
+	public static void amr(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
+	{
+		int EA = getEA(IX, I, address, memory, IR);
+
+		GPR[R] = (short) (memory[EA] + GPR[R]);
+		System.out.println("Load completed");
+		System.out.println(GPR[R]);
+
+	}
+
+	public static void smr(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
+	{
+		int EA = getEA(IX, I, address, memory, IR);
+
+		GPR[R] = (short) (GPR[R] - memory[EA]);
+		System.out.println("Load completed");
+		System.out.println(GPR[R]);
+
+	}
+
+	public static void air(int R, short im, short[] GPR)
+	{
+		GPR[R] += im;
+		System.out.println("Load completed");
+		System.out.println(GPR[R]);
+
+	}
 
 	public static int getEA(int IX, int I, int address, short [] memory, short[] IR)
 	{

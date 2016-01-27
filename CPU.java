@@ -21,10 +21,10 @@ public class CPU
 		short[] GPR = new short[4];
 
 		// 3 index registers
-		short[] IR = new short[3];
+		short[] IR = new short[4];
 
 		// 1 instruction register
-		short[] ISR = new short[1];
+		short ISR = 0;
 
 		// PC (12 bits - implemented as a bitset)
 		BitSet PC = new BitSet(12);
@@ -43,10 +43,13 @@ public class CPU
 		short[] memory = new short[2048];
 
 		// storing an instruction into index 4
-		memory[4] = 1104;
+		memory[4] = 1136;
 
 		// storing the data into index 16
-		memory[16] = 99;
+		memory[18] = 91;
+		memory[17] = 18;
+
+		IR[1] = 1;
 
 
 		// retrieve the value
@@ -56,23 +59,28 @@ public class CPU
 		
 		//System.out.println(PC.toString());
 
-		process_instruction(index, ISR, memory, IR);
+		process_instruction(index, ISR, memory, IR, GPR);
 
 
 	}
 
 
-	public static void process_instruction(int index, short[] ISR, short[] memory, short[] IR)
+	public static void process_instruction(int index, short ISR, short[] memory, short[] IR, short [] GPR)
 	{
 		// fetch the value that PC is pointing to (an instruction) and move it into IR
-		ISR[0] = memory[index];
+		ISR = memory[index];
 
 		System.out.println("Instruction stored at ISR. ISR = " + memory[index]);
 
-		int [] parameters = new int[5];
+		//find the opcode
+		int opcode = ISR >> 10;
+		System.out.println("opcode is " + opcode);
+
+		// create an array for the parameters
+		int [] parameters;
 
 		// parse the instruction at ISR into Opcode, R, IX, I, Address
-		parameters = parseInstruction(ISR[0]);
+		parameters = parseInstruction(ISR, opcode);
 
 		// check the parameters array and see that everything is there
 		
@@ -82,15 +90,13 @@ public class CPU
 		}
 
 		
-		// use opcode to figure out what instruction type to execute
-		int opcode = parameters[0];
-		//System.out.println(opcode);
+		// use opcode to figure out what instruction to run
 
 		switch(opcode)
 		{
 			case 1: 
 				// call load
-				load(parameters[1], parameters[2], parameters[3], parameters[4], memory, IR);
+				ldr(parameters[1], parameters[2], parameters[3], parameters[4], memory, IR, GPR);
 				break;
 			default:
 				break;
@@ -112,62 +118,109 @@ public class CPU
 	}
 
 	// parse the value stored at that index to turn instruction into a sequence of bits
-	public static int [] parseInstruction(short instruction)
+	public static int [] parseInstruction(short instruction, int opcode)
 	{
-		// convert the short to int and then to a binary strng
-		String instructionStringRaw = Integer.toBinaryString(0xFFFF & instruction);
+		int GPRValue = 0;
+		int IRValue = 0;
+		int IAValue = 0;
+		int AddressValue = 0;
+		switch(opcode) {
+			case 1:
+			case 2:
+			case 3:
+			case 41:
+			case 42:
+				GPRValue = (instruction & 0x3FF) >> 8;
+				IRValue = (instruction & 0xFF) >> 6;
+				IAValue = (instruction & 0x3F) >> 5;
+				AddressValue = instruction & 0x1F;
+				break;
+			default:
+				break;
 
-		// make sure that we have 16 bits in the string
-		String instructionString = Integer.toBinaryString(0x10000 | instruction).substring(1);
+		}
+		
 
-		System.out.println(instructionString);
-
-
-		String optcode = instructionString.substring(0, 6);
-		System.out.println("Opcode: " + optcode);
-		int optcodeValue = Integer.parseInt(optcode, 2);
-		System.out.println("Opcode: " + optcodeValue);
-
-		String GPR = instructionString.substring(6, 8);
-		System.out.println("GPR: " + GPR);
-		int GPRValue = Integer.parseInt(GPR, 2);
-		System.out.println("GPR: " + GPRValue);
-
-		String IR = instructionString.substring(8, 10);
-		System.out.println("Index Register: " + IR);
-		int IRValue = Integer.parseInt(IR, 2);
-		System.out.println("Index Register: " + IRValue);
-
-		String IA = instructionString.substring(10, 11);
-		System.out.println("IA: " + IA);
-		int IAValue = Integer.parseInt(IA, 2);
-		System.out.println("IA: " + IAValue);
-
-		String address = instructionString.substring(11, 16);
-		System.out.println("Address: " + address);
-		int addressValue = Integer.parseInt(address, 2);
-		System.out.println("Address: " + addressValue);
-
-		int [] parameters = {optcodeValue, GPRValue, IRValue, IAValue, addressValue};
+		int [] parameters = {opcode, GPRValue, IRValue, IAValue, AddressValue};
 		return parameters;
 	}
 
 	// load instruction
-	public static void load(int R, int IX, int I, int address, short [] memory, short[] IR)
+	public static void ldr(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
 	{
 		// calculate the effective address
+		int EA = getEA(IX, I, address, memory, IR);
 
 		// handle no indirect addressing
 		if (I == 0)
 		{
-			if (I == 0)
+			if (IX == 0)
 			{
 				// load register IX with the contents of the specified address
-				IR[R] = memory[address];
+				GPR[R] = memory[EA];
 				System.out.println("Load completed");
-				System.out.println(IR[R]);
+				System.out.println(GPR[R]);
+			}
+			else
+			{
+				GPR[R] = memory[EA];
+				System.out.println("Load completed");
+				System.out.println(GPR[R]);
 			}
 			
+		}
+		else
+		{
+			if (IX == 0)
+			{
+				GPR[R] = memory[EA];
+				System.out.println("Load completed");
+				System.out.println(GPR[R]);
+			}
+			else
+			{
+				GPR[R] = memory[EA];
+				System.out.println("Load completed");
+				System.out.println(GPR[R]);
+			}
+		}
+
+	}
+
+	public static void str(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
+	{
+
+	}
+
+
+	public static int getEA(int IX, int I, int address, short [] memory, short[] IR)
+	{
+		// handle no indirect addressing
+		if (I == 0)
+		{
+			if (IX == 0)
+			{
+				// load register IX with the contents of the specified address
+				return address;
+			}
+			else
+			{
+				return address + IR[IX];
+				
+			}
+			
+		}
+		else
+		{
+			if (IX == 0)
+			{
+				return memory[address];
+				
+			}
+			else
+			{
+				return memory[address + IR[IX]];
+			}
 		}
 	}
 

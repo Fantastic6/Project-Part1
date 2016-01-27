@@ -42,8 +42,11 @@ public class CPU
 		// memory - Now implemented as an array of 2048 (can change later)
 		short[] memory = new short[2048];
 
-		// storing an insturction into index 4
+		// storing an instruction into index 4
 		memory[4] = 1104;
+
+		// storing the data into index 16
+		memory[16] = 99;
 
 
 		// retrieve the value
@@ -53,15 +56,13 @@ public class CPU
 		
 		//System.out.println(PC.toString());
 
-		process_instruction(index, ISR, memory);
-
-
+		process_instruction(index, ISR, memory, IR);
 
 
 	}
 
-	
-	public static void process_instruction(int index, short[] ISR, short[] memory)
+
+	public static void process_instruction(int index, short[] ISR, short[] memory, short[] IR)
 	{
 		// fetch the value that PC is pointing to (an instruction) and move it into IR
 		ISR[0] = memory[index];
@@ -74,10 +75,29 @@ public class CPU
 		parameters = parseInstruction(ISR[0]);
 
 		// check the parameters array and see that everything is there
+		
 		for (int i = 0; i < parameters.length; i++)
 		{
 			System.out.println(parameters[i]);
 		}
+
+		
+		// use opcode to figure out what instruction type to execute
+		int opcode = parameters[0];
+		//System.out.println(opcode);
+
+		switch(opcode)
+		{
+			case 1: 
+				// call load
+				load(parameters[1], parameters[2], parameters[3], parameters[4], memory, IR);
+				break;
+			default:
+				break;
+		}
+
+
+
 	}
 
 
@@ -130,6 +150,25 @@ public class CPU
 
 		int [] parameters = {optcodeValue, GPRValue, IRValue, IAValue, addressValue};
 		return parameters;
+	}
+
+	// load instruction
+	public static void load(int R, int IX, int I, int address, short [] memory, short[] IR)
+	{
+		// calculate the effective address
+
+		// handle no indirect addressing
+		if (I == 0)
+		{
+			if (I == 0)
+			{
+				// load register IX with the contents of the specified address
+				IR[R] = memory[address];
+				System.out.println("Load completed");
+				System.out.println(IR[R]);
+			}
+			
+		}
 	}
 
 }

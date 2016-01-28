@@ -43,11 +43,11 @@ public class CPU
 		short[] memory = new short[2048];
 
 		// storing an instruction into index 4
-		memory[4] = 53250;
+		memory[4] = 7696;
 
 		// storing the data into index 16
 		
-		memory[16] = 2;
+		//memory[16] = 2;
 
 		
 		GPR[2] = 98;
@@ -112,8 +112,10 @@ public class CPU
 				smr(parameters[1], parameters[2], parameters[3], parameters[4], memory, IR, GPR);
 				break;
 			case 6:
-				air(parameters[1], parameters[2], GPR);
+				air(parameters[1], parameters[4], GPR);
 				break;
+			case 7:
+				sir(parameters[1], parameters[4], GPR);
 			default:
 				break;
 		}
@@ -147,6 +149,8 @@ public class CPU
 			case 3:
 			case 4:
 			case 5:
+			case 6:
+			case 7:
 			case 41:
 			case 42:
 				GPRValue = (instruction & 0x3FF) >> 8;
@@ -158,14 +162,6 @@ public class CPU
 				parameters[2] = IRValue;
 				parameters[3] = IAValue;
 				parameters[4] = AddressValue;
-				break;
-			case 6:
-			case 7:
-				GPRValue = (instruction & 0x3FF) >> 8;
-				short immed = instruction & 0xff;
-				parameters[0] = opcode;
-				parameters[1] = GPRValue; 
-				parameters[2] = immed;
 				break;
 			default:
 				break;
@@ -232,9 +228,17 @@ public class CPU
 
 	}
 
-	public static void air(int R, short im, short[] GPR)
+	public static void air(int R, int im, short[] GPR)
 	{
-		GPR[R] += im;
+		GPR[R] += (short) im;
+		System.out.println("Load completed");
+		System.out.println(GPR[R]);
+
+	}
+
+	public static void sir(int R, int im, short[] GPR)
+	{
+		GPR[R] -= (short) im;
 		System.out.println("Load completed");
 		System.out.println(GPR[R]);
 

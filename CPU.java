@@ -1,7 +1,7 @@
 /*
  *
  * Name: CPU.java
- * Author: Richard Hsu
+ * Author: Richard Hsu and Steve
  * Overview: This will be the CPU class of the Processor. 
  * It is made up of different functions to handle the different
  * instructions that need to be carried out. (EX: Load/Store...)
@@ -34,7 +34,15 @@ public class CPU
 
 		// test example 
 		// suppose: instruction is stored at address 4
-		PC.set(2);
+		//PC.set(2);
+
+		setPC(PC, 4);
+		System.out.println("PC Set" + PC.toString());
+
+		int n = getPC(PC);
+		System.out.println("Getting PC: " + n);
+
+		System.out.println("Current value of PC: " + getPC(PC));
 
 		System.out.println("Address of Memory: " + PC.toString());
 
@@ -130,8 +138,13 @@ public class CPU
 	{
 	    int bitInteger = 0;
 	    for(int i = 0 ; i < 32; i++)
+	   	{
 	        if(bitSet.get(i))
+	        {
 	            bitInteger |= (1 << i);
+	        }
+	    }
+	    System.out.println("Converting: " + bitInteger);
 	    return bitInteger;
 	}
 
@@ -275,4 +288,39 @@ public class CPU
 		}
 	}
 
+	// getters and setter for GPR
+	public static short getGPRValue(short[] GPR, int index)
+	{
+		return GPR[index];
+	}
+
+	public static void setGPRValue(short[] GPR, int index, short value)
+	{
+		GPR[index] = value;
+	}
+
+
+	public static int getPC(BitSet PC)
+	{
+		return bitSetToInt(PC);
+	}
+
+	public static void setPC(BitSet PC, int value)
+	{
+		int index = 0;
+   		String binaryString = Integer.toBinaryString(value);
+   		System.out.println(binaryString);
+   		int j = 0;
+   		for (int i = binaryString.length() - 1; i >= 0; i--)
+   		{
+   			if (binaryString.charAt(i) == '1')
+   			{
+   				PC.set(j);
+   			}
+   			j++;
+   		}
+   		System.out.println("PC final: " + PC.toString());
+   		
+
+	}
 }

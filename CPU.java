@@ -10,10 +10,16 @@
 
 
 import java.util.BitSet;
+//import package.Memory;
 
 public class CPU
 {
-	public static void main(String [] args)
+	short[] GPR = new short[4];
+	short[] IR = new short[4];
+	short ISR = 0;
+	BitSet PC = new BitSet(12);
+
+	/*public static void main(String [] args)
 	{
 		// declare the different registers that we need
 
@@ -71,10 +77,10 @@ public class CPU
 		process_instruction(index, ISR, memory, IR, GPR);
 
 
-	}
+	}*/
 
 
-	public static void process_instruction(int index, short ISR, short[] memory, short[] IR, short [] GPR)
+	public void process_instruction(int index, short ISR, short[] memory, short[] IR, short [] GPR)
 	{
 		// fetch the value that PC is pointing to (an instruction) and move it into IR
 		ISR = memory[index];
@@ -141,7 +147,7 @@ public class CPU
 
 
 	// converts the address PC is pointing to into an int
-	public static int bitSetToInt(BitSet bitSet)
+	public int bitSetToInt(BitSet bitSet)
 	{
 	    int bitInteger = 0;
 	    for(int i = 0 ; i < 32; i++)
@@ -156,7 +162,7 @@ public class CPU
 	}
 
 	// parse the value stored at that index to turn instruction into a sequence of bits
-	public static int [] parseInstruction(short instruction, int opcode)
+	public int [] parseInstruction(short instruction, int opcode)
 	{
 		int GPRValue = 0;
 		int IRValue = 0;
@@ -194,7 +200,7 @@ public class CPU
 	}
 
 	// load instruction
-	public static void ldr(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
+	public void ldr(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
 	{
 		// calculate the effective address
 		int EA = getEA(IX, I, address, memory, IR);
@@ -208,7 +214,7 @@ public class CPU
 
 	}
 
-	public static void str(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
+	public void str(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
 	{
 		int EA = getEA(IX, I, address, memory, IR);
 
@@ -218,7 +224,7 @@ public class CPU
 		System.out.println(memory[EA]);
 	}
 
-	public static void lda(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
+	public void lda(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
 	{
 		int EA = getEA(IX, I, address, memory, IR);
 
@@ -228,7 +234,7 @@ public class CPU
 
 	}
 
-	public static void amr(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
+	public void amr(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
 	{
 		int EA = getEA(IX, I, address, memory, IR);
 
@@ -238,7 +244,7 @@ public class CPU
 
 	}
 
-	public static void smr(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
+	public void smr(int R, int IX, int I, int address, short [] memory, short[] IR, short[] GPR)
 	{
 		int EA = getEA(IX, I, address, memory, IR);
 
@@ -248,7 +254,7 @@ public class CPU
 
 	}
 
-	public static void air(int R, int im, short[] GPR)
+	public void air(int R, int im, short[] GPR)
 	{
 		GPR[R] += (short) im;
 		System.out.println("Load completed");
@@ -256,7 +262,7 @@ public class CPU
 
 	}
 
-	public static void sir(int R, int im, short[] GPR)
+	public void sir(int R, int im, short[] GPR)
 	{
 		GPR[R] -= (short) im;
 		System.out.println("Load completed");
@@ -264,7 +270,7 @@ public class CPU
 
 	}
 
-	public static void ldx(int IX, int address, short[] IR, short [] memory)
+	public void ldx(int IX, int address, short[] IR, short [] memory)
 	{
 		IR[IX] = memory[address];
 		System.out.println("Load completed");
@@ -272,7 +278,7 @@ public class CPU
 
 	}
 
-	public static void stx(int IX, int address, short[] IR, short [] memory)
+	public void stx(int IX, int address, short[] IR, short [] memory)
 	{
 		memory[address] = IR[IX];
 		System.out.println("Load completed");
@@ -286,7 +292,7 @@ public class CPU
 
 	
 
-	public static int getEA(int IX, int I, int address, short [] memory, short[] IR)
+	public int getEA(int IX, int I, int address, short [] memory, short[] IR)
 	{
 		// handle no indirect addressing
 		if (I == 0)
@@ -318,23 +324,23 @@ public class CPU
 	}
 
 	// getters and setter for GPR
-	public static short getGPRValue(short[] GPR, int index)
+	public short getGPRValue(short[] GPR, int index)
 	{
 		return GPR[index];
 	}
 
-	public static void setGPRValue(short[] GPR, int index, short value)
+	public void setGPRValue(short[] GPR, int index, short value)
 	{
 		GPR[index] = value;
 	}
 
 
-	public static int getPC(BitSet PC)
+	public int getPC(BitSet PC)
 	{
 		return bitSetToInt(PC);
 	}
 
-	public static void setPC(BitSet PC, int value)
+	public void setPC(int value)
 	{
 		int index = 0;
    		String binaryString = Integer.toBinaryString(value);

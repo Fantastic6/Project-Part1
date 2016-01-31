@@ -124,10 +124,13 @@ public class CPU
 				break;
 			case 7:
 				sir(parameters[1], parameters[4], GPR);
+				break;
 			case 41: 
-				ldr(parameters[2], parameters[4], IR, memory);
+				ldx(parameters[2], parameters[4], IR, memory);
+				break;
 			case 42:
-				ldr(parameters[2], parameters[4], IR, memory);
+				stx(parameters[2], parameters[4], IR, memory);
+				break;
 			default:
 				break;
 		}

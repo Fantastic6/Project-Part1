@@ -20,7 +20,7 @@ public class CPU
 		// 4 general purpose registers (GPRs)
 		short[] GPR = new short[4];
 
-		// 3 index registers
+		// 4 index registers
 		short[] IR = new short[4];
 
 		// 1 instruction register
@@ -124,6 +124,10 @@ public class CPU
 				break;
 			case 7:
 				sir(parameters[1], parameters[4], GPR);
+			case 41: 
+				ldr(parameters[2], parameters[4], IR, memory);
+			case 42:
+				ldr(parameters[2], parameters[4], IR, memory);
 			default:
 				break;
 		}
@@ -256,6 +260,28 @@ public class CPU
 		System.out.println(GPR[R]);
 
 	}
+
+	public static void ldx(int IX, int address, short[] IR, short [] memory)
+	{
+		IR[IX] = memory[address];
+		System.out.println("Load completed");
+		System.out.println(IR[IX]);
+
+	}
+
+	public static void stx(int IX, int address, short[] IR, short [] memory)
+	{
+		memory[address] = IR[IX];
+		System.out.println("Load completed");
+		System.out.println(memory[address]);
+
+	}
+
+
+
+
+
+	
 
 	public static int getEA(int IX, int I, int address, short [] memory, short[] IR)
 	{

@@ -1,4 +1,4 @@
-/*
+package sample;/*
  *
  * Name: CPU.java
  * Author: Richard Hsu and Steve
@@ -325,18 +325,40 @@ public class CPU
 	}
 
 	// getters and setter for GPR
-	public short getGPRValue(short[] GPR, int index)
+	public short getGPRValue(int index)
 	{
 		return GPR[index];
 	}
 
-	public void setGPRValue(short[] GPR, int index, short value)
+	public void setGPRValue(int index, short value)
 	{
 		GPR[index] = value;
 	}
 
+    // getters and setter for IR
+    public short getIRValue(int index)
+    {
+        return IR[index];
+    }
 
-	public int getPC(BitSet PC)
+    public void setIRValue(int index, short value)
+    {
+        GPR[index] = value;
+    }
+
+    // getters and setter for ISR
+    public short getISRValue()
+    {
+        return ISR;
+    }
+
+    public void setIRValue(short value)
+    {
+        ISR = value;
+    }
+
+
+	public int getPC()
 	{
 		return bitSetToInt(PC);
 	}

@@ -10,7 +10,6 @@
 
 
 import java.util.BitSet;
-//import package.Memory;
 
 public class CPU
 {
@@ -18,6 +17,8 @@ public class CPU
 	short[] IR = new short[4];
 	short ISR = 0;
 	BitSet PC = new BitSet(12);
+
+	Memory memory = new Memory();
 
 	/*public static void main(String [] args)
 	{
@@ -80,12 +81,12 @@ public class CPU
 	}*/
 
 
-	public void process_instruction(int index, short ISR, short[] memory, short[] IR, short [] GPR)
+	public void process_instruction(int index)
 	{
 		// fetch the value that PC is pointing to (an instruction) and move it into IR
-		ISR = memory[index];
+		ISR = memory.memorybank[index];
 
-		System.out.println("Instruction stored at ISR. ISR = " + memory[index]);
+		//System.out.println("Instruction stored at ISR. ISR = " + memory[index]);
 
 		//find the opcode
 		int opcode = ISR >> 10;
@@ -111,19 +112,19 @@ public class CPU
 		{
 			case 1: 
 				// call load
-				ldr(parameters[1], parameters[2], parameters[3], parameters[4], memory, IR, GPR);
+				ldr(parameters[1], parameters[2], parameters[3], parameters[4], memory.memorybank, IR, GPR);
 				break;
 			case 2:
-				str(parameters[1], parameters[2], parameters[3], parameters[4], memory, IR, GPR);
+				str(parameters[1], parameters[2], parameters[3], parameters[4], memory.memorybank, IR, GPR);
 				break;
 			case 3:
-				lda(parameters[1], parameters[2], parameters[3], parameters[4], memory, IR, GPR);
+				lda(parameters[1], parameters[2], parameters[3], parameters[4], memory.memorybank, IR, GPR);
 				break;
 			case 4:
-				amr(parameters[1], parameters[2], parameters[3], parameters[4], memory, IR, GPR);
+				amr(parameters[1], parameters[2], parameters[3], parameters[4], memory.memorybank, IR, GPR);
 				break;
 			case 5: 
-				smr(parameters[1], parameters[2], parameters[3], parameters[4], memory, IR, GPR);
+				smr(parameters[1], parameters[2], parameters[3], parameters[4], memory.memorybank, IR, GPR);
 				break;
 			case 6:
 				air(parameters[1], parameters[4], GPR);
@@ -132,10 +133,10 @@ public class CPU
 				sir(parameters[1], parameters[4], GPR);
 				break;
 			case 41: 
-				ldx(parameters[2], parameters[4], IR, memory);
+				ldx(parameters[2], parameters[4], IR, memory.memorybank);
 				break;
 			case 42:
-				stx(parameters[2], parameters[4], IR, memory);
+				stx(parameters[2], parameters[4], IR, memory.memorybank);
 				break;
 			default:
 				break;
@@ -358,4 +359,7 @@ public class CPU
    		
 
 	}
+
+
+
 }

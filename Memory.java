@@ -1,3 +1,5 @@
+package sample;
+
 public class Memory {
 	short[] memorybank = new short[2048];
 	

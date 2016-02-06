@@ -1,7 +1,6 @@
 package sample;
 
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
@@ -35,13 +33,13 @@ public class Controller implements Initializable, EventHandler<ActionEvent> {
     Button setR0Btn, setR1Btn, setR2Btn, setR3Btn, setBtnInst, btnDisplay, setPCBtn, btnSSS, setI1btn, setI2btn, setI3btn;
 
     @FXML
-    TextField TxtValInst, TxtAddress, txtI1Val, txtI2Val, txtI3Val;
+    TextField TxtValInst, TxtAddress, txtI1Val, txtI2Val, txtI3Val, LabelValR0, LabelValR1, LabelValR2, LabelValR3;
 
     @FXML
-    Label LabelValR0, LabelValR1, LabelValR2, LabelValR3, LabelValPC;
+    Label LabelValPC;
 
     @FXML
-    HBox R0HBox,R1HBox,R2HBox,R3HBox;
+    HBox R0HBox, R1HBox, R2HBox, R3HBox;
 
     private int totalSumR0 = 0, totalSumR1 = 0, totalSumR2 = 0, totalSumR3 = 0, totalSumInst = 0, totalSumPC = 0;
 
@@ -51,6 +49,10 @@ public class Controller implements Initializable, EventHandler<ActionEvent> {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        CheckBox R0ObjArray[] = {R0_B1, R0_B2, R0_B4, R0_B8, R0_B16, R0_B32, R0_B64, R0_B128, R0_B256, R0_B512, R0_B1024, R0_B2048, R0_B4096, R0_B8192, R0_B16384, R0_B32768};
+        CheckBox R1ObjArray[] = {R1_B1, R1_B2, R1_B4, R1_B8, R1_B16, R1_B32, R1_B64, R1_B128, R1_B256, R1_B512, R1_B1024, R1_B2048, R1_B4096, R1_B8192, R1_B16384, R1_B32768};
+        CheckBox R2ObjArray[] = {R2_B1, R2_B2, R2_B4, R2_B8, R2_B16, R2_B32, R2_B64, R2_B128, R2_B256, R2_B512, R2_B1024, R2_B2048, R2_B4096, R2_B8192, R2_B16384, R2_B32768};
+        CheckBox R3ObjArray[] = {R3_B1, R3_B2, R3_B4, R3_B8, R3_B16, R3_B32, R3_B64, R3_B128, R3_B256, R3_B512, R3_B1024, R3_B2048, R3_B4096, R3_B8192, R3_B16384, R3_B32768};
         //theTestFunction(Button btn, CheckBox);
         btnDisplay.setDisable(true);
         //btnSSS.setDisable(true);
@@ -64,13 +66,14 @@ public class Controller implements Initializable, EventHandler<ActionEvent> {
         EventHandler eventHandlerR0Line = new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(R0HBox.isFocused()){
-                    System.out.println(R0HBox.getClass().toString());
-                }
                 if(event.getSource().toString().equals(setR0Btn.toString())) {
 //                    registerResults.add(0, totalSum);
+                    totalSumR0 = Integer.parseInt(LabelValR0.getText());
+                    setCheckBox(totalSumR0, R0ObjArray);
+                    LabelValR0.setText(null);
                     Main.cpu.setGPRValue(0, (short) totalSumR0);
-                    registerResArr[0] = (int) totalSumR0;
+                    //totalSumR0 = 0;
+//                    registerResArr[0] = (int) totalSumR0;
 //                    totalSumR0 = 0;
                     /*for (int i = 0; i < registerResArr.length; i++)
                         System.out.println(registerResArr[i]);*/
@@ -216,8 +219,11 @@ public class Controller implements Initializable, EventHandler<ActionEvent> {
             public void handle(ActionEvent event) {
                 if(event.getSource().toString().equals(setR1Btn.toString())) {
 //                    registerResults.add(1, totalSum);
+                    totalSumR1 = Integer.parseInt(LabelValR1.getText());
+//                    LabelValR1.setText(null);
+                    setCheckBox(totalSumR1, R1ObjArray);
                     Main.cpu.setGPRValue(1, (short) totalSumR1);
-                    registerResArr[1] = (int) totalSumR1;
+//                    registerResArr[1] = (int) totalSumR1;
                     /*for (int i = 0; i < registerResArr.length; i++)
                         System.out.println(registerResArr[i]);*/
                 } else if(event.getSource().toString().equals(R1_B1.toString())) {
@@ -362,10 +368,10 @@ public class Controller implements Initializable, EventHandler<ActionEvent> {
             public void handle(ActionEvent event) {
                 if(event.getSource().toString().equals(setR2Btn.toString())) {
 //                    registerResults.add(2, totalSum);
-
+                    totalSumR2 = Integer.parseInt(LabelValR2.getText());
+//                    LabelValR2.setText(null);
+                    setCheckBox(totalSumR2, R2ObjArray);
                     Main.cpu.setGPRValue(2, (short) totalSumR2);
-                    registerResArr[2] = (int) totalSumR2;
-//                    totalSumR2 = 0;
                     /*for (int i = 0; i < registerResArr.length; i++)
                         System.out.println(registerResArr[i]);*/
                 } else if(event.getSource().toString().equals(R2_B1.toString())) {
@@ -510,9 +516,10 @@ public class Controller implements Initializable, EventHandler<ActionEvent> {
             public void handle(ActionEvent event) {
                 if(event.getSource().toString().equals(setR3Btn.toString())) {
 //                    registerResults.add(3, totalSum);
+                    totalSumR3 = Integer.parseInt(LabelValR3.getText());
+//                    LabelValR3.setText(null);
+                    setCheckBox(totalSumR3, R3ObjArray);
                     Main.cpu.setGPRValue(3, (short) totalSumR3);
-                    registerResArr[3] = (int) totalSumR3;
-//                    totalSumR3 = 0;
                     /*for (int i = 0; i < registerResArr.length; i++)
                         System.out.println(registerResArr[i]);*/
                 } else if(event.getSource().toString().equals(R3_B1.toString())) {
@@ -658,8 +665,10 @@ public class Controller implements Initializable, EventHandler<ActionEvent> {
             public void handle(ActionEvent event) {
                 if(event.getSource().toString().equals(setBtnInst.toString())) {
                     btnDisplay.setDisable(false);
+                    totalSumInst = Integer.parseInt(TxtValInst.getText().trim());
                     memoryAddress = TxtAddress.getText().trim();
                     Main.memory.set(Integer.parseInt(memoryAddress), (short) totalSumInst);
+                    TxtValInst.setText(null);
 //                    System.out.println(Main.memory.get(Integer.parseInt(memoryAddress)));
                 } else if(event.getSource().toString().equals(Inst_B1.toString())) {
                     if(Inst_B1.isSelected()) {
@@ -842,9 +851,24 @@ public class Controller implements Initializable, EventHandler<ActionEvent> {
             @Override
             public void handle(ActionEvent event) {
                 if(event.getSource().toString().equals(btnSSS.toString())) {
-                    Main.cpu.setIRValue(1, (short) 1);
+//                    Main.cpu.setIRValue(1, (short) 1);
                     Main.cpu.process_instruction(Main.cpu.getPC());
-                    System.out.println(Main.cpu.getGPRValue(0));
+                    LabelValR0.setText(String.valueOf(Main.cpu.getGPRValue(0)));
+                    LabelValR1.setText(String.valueOf(Main.cpu.getGPRValue(1)));
+                    LabelValR2.setText(String.valueOf(Main.cpu.getGPRValue(2)));
+                    LabelValR3.setText(String.valueOf(Main.cpu.getGPRValue(3)));
+                    setCheckBox(Main.cpu.getGPRValue(0), R0ObjArray);
+                    setCheckBox(Main.cpu.getGPRValue(1), R1ObjArray);
+                    setCheckBox(Main.cpu.getGPRValue(2), R2ObjArray);
+                    setCheckBox(Main.cpu.getGPRValue(3), R3ObjArray);
+                    totalSumR0 = Main.cpu.getGPRValue(0);
+                    totalSumR1 = Main.cpu.getGPRValue(1);
+                    totalSumR2 = Main.cpu.getGPRValue(2);
+                    totalSumR3 = Main.cpu.getGPRValue(3);
+                    txtI1Val.setText(String.valueOf(Main.cpu.getIRValue(1)));
+                    txtI2Val.setText(String.valueOf(Main.cpu.getIRValue(2)));
+                    txtI3Val.setText(String.valueOf(Main.cpu.getIRValue(3)));
+//                    System.out.println(Main.cpu.getGPRValue(0));
 //                    System.out.println("21: " + Main.memory.get(21));//Store
                 }
             }
@@ -855,6 +879,7 @@ public class Controller implements Initializable, EventHandler<ActionEvent> {
             public void handle(ActionEvent event) {
                 if(event.getSource().toString().equals(setI1btn.toString())) {
                     short value = Short.parseShort(txtI1Val.getText().trim());
+//                    System.out.println("IR1 Value: " + value);
                     Main.cpu.setIRValue(1, value);
                 }
             }
@@ -1121,6 +1146,17 @@ public class Controller implements Initializable, EventHandler<ActionEvent> {
         PC_B1024.setOnAction(eventHandlerPC);
         PC_B2048.setOnAction(eventHandlerPC);
     }
+
+    private void setCheckBox(int value, CheckBox[] checkBoxes) {
+        for (int i = 15; i >= 0; i--) {
+            if(((value >> i) & 0x1) == 0) {
+                checkBoxes[i].setSelected(false);
+            } else {
+                checkBoxes[i].setSelected(true);
+            }
+        }
+    }
+
 
     private void theTestFunction() {
 

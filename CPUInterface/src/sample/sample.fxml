@@ -106,14 +106,7 @@
                     <CheckBox id="" fx:id="R0_B2" mnemonicParsing="false" text="2" />
                     <CheckBox id="" fx:id="R0_B1" mnemonicParsing="false" text="1" />
                     <Button id="" fx:id="setR0Btn" font="$x3" mnemonicParsing="false" prefHeight="29.0" text="SET" />
-                    <Label id="R0Val" fx:id="LabelValR0" alignment="CENTER_LEFT" graphicTextGap="10.0" text="0" HBox.hgrow="ALWAYS">
-                      <font>
-                        <Font size="12.0" fx:id="x4" />
-                      </font>
-                      <HBox.margin>
-                        <Insets left="5.0" fx:id="x9" />
-                      </HBox.margin>
-                    </Label>
+                    <TextField fx:id="LabelValR0" prefHeight="25.0" prefWidth="39.0" promptText="R0" />
                   </children>
                   <padding>
                     <Insets fx:id="x2" />
@@ -139,7 +132,7 @@
                     <CheckBox id="" fx:id="R1_B2" mnemonicParsing="false" text="2" />
                     <CheckBox id="" fx:id="R1_B1" mnemonicParsing="false" text="1" />
                     <Button id="" fx:id="setR1Btn" font="$x3" mnemonicParsing="false" prefHeight="29.0" text="SET" />
-                    <Label id="R0Val" fx:id="LabelValR1" alignment="CENTER_LEFT" font="$x4" text="0" HBox.hgrow="ALWAYS" HBox.margin="$x9" />
+                    <TextField fx:id="LabelValR1" prefHeight="25.0" prefWidth="39.0" promptText="R1" />
                   </children>
                   <padding>
                     <Insets fx:id="x2" />
@@ -165,7 +158,7 @@
                     <CheckBox id="" fx:id="R2_B2" mnemonicParsing="false" text="2" />
                     <CheckBox id="" fx:id="R2_B1" mnemonicParsing="false" text="1" />
                     <Button id="" fx:id="setR2Btn" font="$x3" mnemonicParsing="false" prefHeight="29.0" text="SET" />
-                    <Label id="R0Val" fx:id="LabelValR2" alignment="CENTER_LEFT" font="$x4" text="0" HBox.hgrow="ALWAYS" HBox.margin="$x9" />
+                    <TextField fx:id="LabelValR2" prefHeight="25.0" prefWidth="39.0" promptText="R2" />
                   </children>
                   <padding>
                     <Insets fx:id="x2" />
@@ -191,7 +184,7 @@
                     <CheckBox id="" fx:id="R3_B2" mnemonicParsing="false" text="2" />
                     <CheckBox id="" fx:id="R3_B1" mnemonicParsing="false" text="1" />
                     <Button id="" fx:id="setR3Btn" font="$x3" mnemonicParsing="false" prefHeight="29.0" text="SET" />
-                    <Label id="R0Val" fx:id="LabelValR3" alignment="CENTER_LEFT" font="$x4" text="0" HBox.hgrow="ALWAYS" HBox.margin="$x9" />
+                    <TextField fx:id="LabelValR3" prefHeight="25.0" prefWidth="39.0" promptText="R3" />
                   </children>
                   <padding>
                     <Insets fx:id="x2" />
@@ -227,7 +220,10 @@
             <CheckBox id="" fx:id="PC_B2" mnemonicParsing="false" text="2" />
             <CheckBox id="" fx:id="PC_B1" mnemonicParsing="false" text="1" />
             <Button id="" fx:id="setPCBtn" font="$x3" mnemonicParsing="false" prefHeight="29.0" text="SET" />
-            <Label id="" fx:id="LabelValPC" alignment="CENTER_LEFT" font="$x4" text="0">
+            <Label id="" fx:id="LabelValPC" alignment="CENTER_LEFT" text="0">
+              <font>
+                <Font size="12.0" fx:id="x4" />
+              </font>
               <HBox.margin>
                 <Insets fx:id="x2" />
               </HBox.margin>

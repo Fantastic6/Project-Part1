@@ -206,7 +206,7 @@
         </HBox>
         <HBox alignment="CENTER" prefHeight="74.0" prefWidth="680.0" spacing="15.0" VBox.vgrow="ALWAYS">
           <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" ellipsisString="" font="$x5" prefWidth="16.999908447265625" text="PC" HBox.hgrow="ALWAYS">
+            <Label alignment="CENTER" contentDisplay="CENTER" ellipsisString="" font="$x5" prefWidth="20.0" text="PC" HBox.hgrow="ALWAYS">
               <HBox.margin>
                 <Insets fx:id="x2" />
               </HBox.margin>

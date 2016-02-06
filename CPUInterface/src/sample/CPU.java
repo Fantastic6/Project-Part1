@@ -12,73 +12,26 @@ package sample;/*
 import java.util.BitSet;
 
 public class CPU {
+
+    // 4 general purpose registers
     short[] GPR = new short[4];
+
+    // 3 index registers but 4 different values, 0 , 1, 2, 3
     short[] IR = new short[4];
+
+    // 1 instruction set register
     short ISR = 0;
+
+    // 1 12 bit program counter
     BitSet PC = new BitSet(12);
 
-	/*public static void main(String [] args)
-    {
-		// declare the different registers that we need
-
-		// 4 general purpose registers (GPRs)
-		short[] GPR = new short[4];
-
-		// 4 index registers
-		short[] IR = new short[4];
-
-		// 1 instruction register
-		short ISR = 0;
-
-		// PC (12 bits - implemented as a bitset)
-		BitSet PC = new BitSet(12);
-
-		System.out.println(PC);
-		System.out.println("Length: " + PC.length());
-
-		// test example 
-		// suppose: instruction is stored at address 4
-		//PC.set(2);
-
-		setPC(PC, 4);
-		System.out.println("PC Set" + PC.toString());
-
-		int n = getPC(PC);
-		System.out.println("Getting PC: " + n);
-
-		System.out.println("Current value of PC: " + getPC(PC));
-
-		System.out.println("Address of Memory: " + PC.toString());
-
-
-		// memory - Now implemented as an array of 2048 (can change later)
-		short[] memory = new short[2048];
-
-		// storing an instruction into index 4
-		memory[4] = 7696;
-
-		// storing the data into index 16
-		
-		//memory[16] = 2;
-
-		
-		GPR[2] = 98;
-
-
-		// retrieve the value
-		int index = bitSetToInt(PC);
-		System.out.println(index);
-		
-		
-		//System.out.println(PC.toString());
-
-		process_instruction(index, ISR, memory, IR, GPR);
-
-
-	}*/
-
-
+    /**  This is that processes one single instruction. 
+     *      
+     *  @param: int index (index in memory on where instruction is)
+     *  @return: void
+     */
     public void process_instruction(int index) {
+
         // fetch the value that PC is pointing to (an instruction) and move it into IR
         ISR = Main.memory.memorybank[index];
 
@@ -97,30 +50,29 @@ public class CPU {
         parameters = parseInstruction(ISR, opcode);
 
         // check the parameters array and see that everything is there
-
+        /*
         for (int i = 0; i < parameters.length; i++) {
             System.out.println(parameters[i]);
         }
-
+        */
 
         // use opcode to figure out what instruction to run
-
         switch (opcode) {
             case 1:
                 // call load
-                ldr(parameters[1], parameters[2], parameters[3], parameters[4], Main.memory.memorybank, IR, GPR);
+                ldr(parameters[1], parameters[2], parameters[3], parameters[4], IR, GPR);
                 break;
             case 2:
-                str(parameters[1], parameters[2], parameters[3], parameters[4], Main.memory.memorybank, IR, GPR);
+                str(parameters[1], parameters[2], parameters[3], parameters[4], IR, GPR);
                 break;
             case 3:
-                lda(parameters[1], parameters[2], parameters[3], parameters[4], Main.memory.memorybank, IR, GPR);
+                lda(parameters[1], parameters[2], parameters[3], parameters[4], IR, GPR);
                 break;
             case 4:
-                amr(parameters[1], parameters[2], parameters[3], parameters[4], Main.memory.memorybank, IR, GPR);
+                amr(parameters[1], parameters[2], parameters[3], parameters[4], IR, GPR);
                 break;
             case 5:
-                smr(parameters[1], parameters[2], parameters[3], parameters[4], Main.memory.memorybank, IR, GPR);
+                smr(parameters[1], parameters[2], parameters[3], parameters[4], IR, GPR);
                 break;
             case 6:
                 air(parameters[1], parameters[4], GPR);
@@ -129,10 +81,10 @@ public class CPU {
                 sir(parameters[1], parameters[4], GPR);
                 break;
             case 41:
-                ldx(parameters[2], parameters[4], IR, Main.memory.memorybank, parameters[3]);
+                ldx(parameters[2], parameters[4], IR, parameters[3]);
                 break;
             case 42:
-                stx(parameters[2], parameters[4], IR, Main.memory.memorybank,parameters[3]);
+                stx(parameters[2], parameters[4], IR, parameters[3]);
                 break;
             default:
                 break;
@@ -142,7 +94,11 @@ public class CPU {
     }
 
 
-    // converts the address PC is pointing to into an int
+    /** This is a method that converts the PC into an int.
+     *  Since the PC is a bitset, the conversion requires shifting of bits.  
+     *  @param: BitSet bitset
+     *  @return: int
+     */
     public int bitSetToInt(BitSet bitSet) {
         int bitInteger = 0;
         for (int i = 0; i < 32; i++) {
@@ -154,7 +110,11 @@ public class CPU {
         return bitInteger;
     }
 
-    // parse the value stored at that index to turn instruction into a sequence of bits
+    /** This is a method that takes the instruction and opcode and then parses it into the 
+     *  required values. 
+     *  @param: short instruction, int opcode
+     *  @return: int[]
+     */
     public int[] parseInstruction(short instruction, int opcode) {
         int GPRValue = 0;
         int IRValue = 0;
@@ -190,95 +150,139 @@ public class CPU {
         return parameters;
     }
 
-    // load instruction
-    public void ldr(int R, int IX, int I, int address, short[] memory, short[] IR, short[] GPR) {
+    /** This is a method that loads a register from memory. 
+     *  @param: int R, int IX, int I, int address, short[] IR, short[] GPR
+     *  @return: void
+     */
+    public void ldr(int R, int IX, int I, int address, short[] IR, short[] GPR) {
         // calculate the effective address
-        int EA = getEA(IX, I, address, memory, IR);
+        int EA = getEA(IX, I, address, IR);
 
 
         // load register IX with the contents of the specified address
-        GPR[R] = memory[EA];
+        //GPR[R] = memory[EA]; // Actual code here
+        GPR[R] = Main.memory.get(EA);
         System.out.println("Load completed");
-        System.out.println(GPR[R]);
+        System.out.println("GPR[R]:"+GPR[R]);
 
 
     }
 
-    public void str(int R, int IX, int I, int address, short[] memory, short[] IR, short[] GPR) {
-        int EA = getEA(IX, I, address, memory, IR);
+    /** This is a method that stores register to memory. 
+     *  @param: int R, int IX, int I, int address, short[] memory, short[] IR, short[] GPR
+     *  @return: void
+     */
+    public void str(int R, int IX, int I, int address, short[] IR, short[] GPR) {
+        int EA = getEA(IX, I, address, IR);
         System.out.println("EA:" + EA);
         //store
 //		memory[EA] = GPR[R];
         Main.memory.set(EA, GPR[R]);
         System.out.println("Store completed");
-        System.out.println("memory[EA]" + memory[EA]);
+        System.out.println("Main.memorybank[EA]" + Main.memory.memorybank[EA]);
     }
 
-    public void lda(int R, int IX, int I, int address, short[] memory, short[] IR, short[] GPR) {
-        int EA = getEA(IX, I, address, memory, IR);
-
+    /** This is a method that loads the register with address.  
+     *  @param: int R, int IX, int I, int address, short[] IR, short[] GPR
+     *  @return: void
+     */
+    public void lda(int R, int IX, int I, int address, short[] IR, short[] GPR) {
+        int EA = getEA(IX, I, address, IR);
+        System.out.println("EA" + EA);
         GPR[R] = (short) EA;
-        System.out.println("Store completed");
-        System.out.println(GPR[R]);
-
-    }
-
-    public void amr(int R, int IX, int I, int address, short[] memory, short[] IR, short[] GPR) {
-        int EA = getEA(IX, I, address, memory, IR);
-
-        GPR[R] = (short) (Main.memory.memorybank[EA] + GPR[R]);
         System.out.println("Load completed");
+        System.out.println("GPR[R]"+GPR[R]);
+
+    }
+
+    /** This is a method that adds memory to register.
+     *  @param: int R, int IX, int I, int address, short[] memory, short[] IR, short[] GPR
+     *  @return: void
+     */
+    public void amr(int R, int IX, int I, int address, short[] IR, short[] GPR) {
+        int EA = getEA(IX, I, address, IR);
+
+        //GPR[R] = (short) (Main.memory.memorybank[EA] + GPR[R]);
+        GPR[R] = (short) (Main.memory.get(EA) + GPR[R]);
+        System.out.println("Add completed");
         System.out.println(GPR[R]);
 
     }
 
-    public void smr(int R, int IX, int I, int address, short[] memory, short[] IR, short[] GPR) {
-        int EA = getEA(IX, I, address, memory, IR);
+    /** This is a method that substracts memory from resiter. 
+     *  @param: int R, int IX, int I, int address, short[] IR, short[] GPR
+     *  @return: void
+     */
+    public void smr(int R, int IX, int I, int address, short[] IR, short[] GPR) {
+        int EA = getEA(IX, I, address, IR);
 
-        GPR[R] = (short) (GPR[R] - Main.memory.memorybank[EA]);
-        System.out.println("Load completed");
+        //GPR[R] = (short) (GPR[R] - Main.memory.memorybank[EA]);
+        GPR[R] = (short) (GPR[R] - Main.memory.get(EA));
+        System.out.println("Subtract completed");
         System.out.println(GPR[R]);
 
     }
 
+    /** This is a method that adds memory to register. 
+     *  @param: int R, int im, short[] GPR
+     *  @return: void
+     */
     public void air(int R, int im, short[] GPR) {
         GPR[R] += (short) im;
-        System.out.println("Load completed");
+        System.out.println("Add completed");
         System.out.println(GPR[R]);
     }
 
+    /** This is a method that subtracts the intermediate from the register. 
+     *  @param: int R, int im, short[] GPR
+     *  @return: void
+     */
     public void sir(int R, int im, short[] GPR) {
         GPR[R] -= (short) im;
-        System.out.println("Load completed");
+        System.out.println("Subtract completed");
         System.out.println(GPR[R]);
 
     }
 
-    public void ldx(int IX, int address, short[] IR, short[] memory, int param) {
+    /** This is a method that loads index register from memory. 
+     *  @param: int IX, int address, short[] IR, short[] memory, int param
+     *  @return: void
+     */
+    public void ldx(int IX, int address, short[] IR, int param) {
         if(param == 0) {
             IR[IX] = (short) address;
         }
         else{
-            IR[IX] = Main.memory.memorybank[address];
+            //IR[IX] = Main.memory.memorybank[address];
+            IR[IX] = Main.memory.get(address);
         }
         System.out.println("Load completed");
-        System.out.println("IR[IX]"+IR[IX]);
+        System.out.println("IR[IX]" + IR[IX]);
 
     }
 
-    public void stx(int IX, int address, short[] IR, short[] memory, int param) {
+    /** This is a method that stores index register to memory. 
+     *  @param: int IX, int address, short[] IR, short[] memory, int param
+     *  @return: void
+     */
+    public void stx(int IX, int address, short[] IR, int param) {
         if (param == 0) {
-            Main.memory.memorybank[address] = IR[IX];
+            //Main.memory.memorybank[address] = IR[IX];
+            Main.memory.set(address, IR[IX]);
         }else{
             Main.memory.set(Main.memory.memorybank[address],IR[IX]);
         }
         System.out.println("Load completed");
-        //System.out.println(memory[address]);
+        System.out.println("Main.memorybank[EA]" + address);
 
     }
 
-
-    public int getEA(int IX, int I, int address, short[] memory, short[] IR) {
+    /** 
+     *  This is a method that calculates the effective address. 
+     *  @param: int IX, int I, int address, short[] IR
+     *  @return: int
+     */
+    public int getEA(int IX, int I, int address, short[] IR) {
         System.out.println("IR:" + IR[IX]);
         // handle no indirect addressing
         if(I == 0) {
@@ -300,38 +304,74 @@ public class CPU {
         }
     }
 
-    // getters and setter for GPR
+    /** 
+     *  This is a getter for GPR.
+     *  @param: int index
+     *  @return: short
+     */
     public short getGPRValue(int index) {
         return GPR[index];
     }
 
+    /** 
+     *  This is a setter for GPR.
+     *  @param: int index, short value
+     *  @return: void
+     */
     public void setGPRValue(int index, short value) {
         GPR[index] = value;
     }
 
-    // getters and setter for IR
+    /** 
+     *  This is a getter for IR.
+     *  @param: int index
+     *  @return: short
+     */
     public short getIRValue(int index) {
         return IR[index];
     }
 
+    /** 
+     *  This is a setter for IR.
+     *  @param: int index, short value
+     *  @return: void
+     */
     public void setIRValue(int index, short value) {
         IR[index] = value;
     }
 
-    // getters and setter for ISR
+    /** 
+     *  This is a getter for ISR.
+     *  @param: void
+     *  @return: short
+     */
     public short getISRValue() {
         return ISR;
     }
 
-    public void setIRValue(short value) {
+    /** 
+     *  This is a setter for ISR.
+     *  @param: short value
+     *  @return: void
+     */
+    public void setISRValue(short value) {
         ISR = value;
     }
 
-
+    /** 
+     *  This is a getter for PC.
+     *  @param: void
+     *  @return: int
+     */
     public int getPC() {
         return bitSetToInt(PC);
     }
 
+    /** This is a method that converts the PC into a bitset.
+     *  Since the PC is a bitset, the conversion requires shifting of bits.  
+     *  @param: int value
+     *  @return: void
+     */
     public void setPC(int value) {
         int index = 0;
         String binaryString = Integer.toBinaryString(value);

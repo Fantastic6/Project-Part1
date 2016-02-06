@@ -13,7 +13,7 @@
       <children>
         <HBox alignment="CENTER" prefHeight="148.0" prefWidth="680.0">
           <children>
-            <VBox alignment="CENTER" prefHeight="148.0" prefWidth="680.0">
+            <VBox alignment="CENTER" prefHeight="148.0" prefWidth="680.0" HBox.hgrow="ALWAYS">
               <children>
                 <HBox id="x" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                   <children>
@@ -45,7 +45,7 @@
                     <Insets fx:id="x2" />
                   </VBox.margin>
                 </HBox>
-                <HBox alignment="CENTER" prefHeight="74.0" prefWidth="680.0" spacing="3.0" VBox.margin="$x2">
+                <HBox alignment="CENTER" prefHeight="74.0" prefWidth="680.0" spacing="2.0" VBox.margin="$x2" VBox.vgrow="ALWAYS">
                   <children>
                     <CheckBox id="" fx:id="Inst_B32768" mnemonicParsing="false" text="16" />
                     <CheckBox id="" fx:id="Inst_B16384" mnemonicParsing="false" text="15" />
@@ -63,12 +63,16 @@
                     <CheckBox id="" fx:id="Inst_B4" mnemonicParsing="false" text="3" />
                     <CheckBox id="" fx:id="Inst_B2" mnemonicParsing="false" text="2" />
                     <CheckBox id="" fx:id="Inst_B1" mnemonicParsing="false" text="1" />
-                    <Button id="" fx:id="setBtnInst" mnemonicParsing="false" prefHeight="29.0" text="SET">
+                    <Button id="" fx:id="setBtnInst" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="29.0" prefWidth="39.0" text="SET" HBox.hgrow="ALWAYS">
                       <font>
                         <Font name="System Bold" size="11.0" fx:id="x3" />
                       </font>
                     </Button>
-                    <TextField fx:id="TxtValInst" prefHeight="25.0" prefWidth="49.0" promptText="#num" />
+                    <TextField fx:id="TxtValInst" alignment="CENTER" prefHeight="25.0" prefWidth="39.0" promptText="#num">
+                      <HBox.margin>
+                        <Insets left="2.0" />
+                      </HBox.margin>
+                    </TextField>
                   </children>
                   <padding>
                     <Insets fx:id="x2" />
